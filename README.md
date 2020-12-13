@@ -7,8 +7,8 @@ INTRODUCTION TO COMPUTER 1 in NCU
 
 - Adder Unit:
 > <p>carry &nbsp in &nbsp	 9  <p/> 
-> <p>input &nbsp 0  &nbsp $nbsp	 9  <p/>
-> <p>input &nbsp 1  &nbsp $nbsp  9  <p/>
+> <p>input &nbsp 0  &nbsp &nbsp	 9  <p/>
+> <p>input &nbsp 1  &nbsp &nbsp  9  <p/>
 > <p>&nbsp  ------------------------<p/>
 > <p>output &nbsp &nbsp &nbsp    7  <p/>
 > <p>carry out &nbsp             2  <p/>
