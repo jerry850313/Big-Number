@@ -6,9 +6,9 @@ INTRODUCTION TO COMPUTER 1 in NCU
  The difference between the code and Arithmetic Unit is that the former computes numbers in Decimal and the latter in Binary.
 
 - Adder Unit:
-> carry in	9  <br /> 
-> input 0	9  <br />
-> input 1	9  <br />
-> <p>&nbsp -----------<p /> <br />
-> output       	7  <br />
-> carry out	2  <br />
+> <p>carry in &nbsp 9  <p /> 
+> <p>input 0  &nbsp 9  <p />
+> <p>input 1  &nbsp 9  <p />
+> <p>&nbsp  -----------<p />
+> <p>output   &nbsp 7  <p />
+> <p>carry out&nbsp 2  <p />
