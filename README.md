@@ -9,6 +9,6 @@ INTRODUCTION TO COMPUTER 1 in NCU
 > carry in	9  <br /> 
 > input 0	9  <br />
 > input 1	9  <br />
-> &nbsp----------- <br />
+> &nbsp ----------- <br />
 > output       	7  <br />
 > carry out	2  <br />
