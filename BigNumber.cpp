@@ -123,7 +123,7 @@ std::vector<char> Calculator::ADDER(){
 		'0',
 		InputA_,
 		InputB_);
-	if(Cout!=0)
+	if(Cout!='0')
 		S.push_back(Cout);
 	std::reverse(S.begin(),S.end());
 	return S;
