@@ -1,270 +1,197 @@
 #include <iostream>
 #include <vector>
-#include <string.h>
-#include <tuple>
+#include <string>
 #include <algorithm>
-#include <sstream>
+#include <cstdlib>
+#include <cmath>
+#include <complex>
 
-class Calculator{
-public:
-	static int function;
-	static std::string InputA;
-	static std::string InputB;
-	static std::string OutputC;
-	static void Computing();
-	static void Work();
-	static void Print();
-	static std::vector<char> Str2Vec(std::string String);
-	static std::vector<char> Complement(std::vector<char> Vector);
-	static std::tuple<std::vector<char>,std::vector<char>> Align(
-		std::vector<char> Vector0,
-		std::vector<char> Vector1);
-	static std::vector<char> ADDER();
-	static std::vector<char> SUB();
-	static std::vector<char> MUL();
-};
+using namespace std;
+typedef complex<double> Z;
+const double PI(acos(-1.0));
 
-class Adder{
-public:
-	std::tuple<char,char> ADDER_Unit(char A,char B,char Cin);
-	std::tuple<std::vector<char>,char> ADDER(
-		char Cin,
-		std::vector<char> Input0,
-		std::vector<char> Input1);
-};
-
-class Multiplexer : public Adder{
-public:
-	std::tuple<char,char> MUL_Unit(char A,char B,char Cin);
-	std::vector<char> Multiplexer_OneDigit(
-		std::vector<char> Input0,
-		char Input1);
-};
-
-int Calculator::function=0;
-std::string Calculator::InputA="";
-std::string Calculator::InputB="";
-std::string Calculator::OutputC="";
+void inputmode(int &mode);
+void chosemode(int mode,string a, string b, vector<int> &c);
+void addition(string a, string b, vector<int> &c);
+void subtraction(string a, string b, vector<int> &c);
+void multiplication(string a, string b, vector<int> &c);
+void changeform(string a,string b,int *A,int *B);
+void changeform(string a, string b, vector<int> *A, vector<int> *B);
+void FFT(Z *a, int n, int t);
+void changeform(string a, string b, Z A[], Z B[]);
 
 int main(){
-	Calculator::Work();
-	return 0;
-}
-
-void Calculator::Work(){
-	while(1){
-		std::cout << "Please choose the function\n";
-		std::cout << "1 Addition\n";
-		std::cout << "2 Subtraction\n";
-		std::cout << "3 Multiplication\n";
-		std::cout << "0 Exit\n";
-		std::cin >> function;
-		switch(function){
-			case 0:{
-				std::cout << "Good bye!\n";
-				return;
-			}
-			case 1: case 2: case 3:
-				break;
-			default:{
-				std::cout << "Error! Please try again.\n";
-				continue;
-			}
-		}
-		std::cout << "Enter the Number\n";
-		std::cout << "a=";
-		std::cin >> InputA;
-		std::cout << "b=";
-		std::cin >> InputB;
-		Calculator::Computing();
-		std::cout << "Result=";
-		std::cout << OutputC << std::endl;
-	}
-	return;
-}
-
-void Calculator::Computing(){
-	std::vector<char> v;
-	std::ostringstream out;
-	switch(function){
-		case 1:{
-			v=Calculator::ADDER();
-			break;
-		}
-		case 2:{
-			v=Calculator::SUB();
-			break;
-		}
-		case 3:{
-			v=Calculator::MUL();
-			break;
-		}
-		default:
-			break;
-		}
-    for (char c: v) {
-        out << c;
+    string inputA, inputB;
+    vector<int>  outputC;
+    int countmode=6;
+    while(countmode!=0){
+        inputmode(countmode);
+        if(countmode!=0){
+            switch(countmode){
+                case 1:
+                    cout << "----Now for Addition----"<<endl;
+                        cout << "a= ";
+                        cin >> inputA;
+                        cout << "b=";
+                        cin >> inputB;
+                        addition(inputA, inputB, outputC);
+                        break;
+                case 2:
+                    cout << "----Now for Subtraction----" << endl;
+                        cout << "a= ";
+                        cin >> inputA;
+                        cout << "b=";
+                        cin >> inputB;
+                        subtraction(inputA, inputB, outputC);
+                        break;
+                case 3:
+                    cout << "----Now for Subtraction----" << endl;
+                        cout << "a= ";
+                        cin >> inputA;
+                        cout << "b=";
+                        cin >> inputB;
+                        multiplication(inputA, inputB, outputC);
+                        break;
+                default:
+                    cout << "Error! Please try again" << endl;
+                    break;
+            }
+            cout << "Result:";
+            while (!outputC.empty())
+            {
+                cout << outputC.back();
+                outputC.pop_back();
+            }
+        cout << endl;
+        }
     }
-    OutputC=out.str();
-	return;
+    cout << "Good bye!";
+    return 0;
 }
 
-std::vector<char> Calculator::ADDER(){
-	Adder A;
-	std::vector<char> S;
-	std::vector<char> InputA_;
-	std::vector<char> InputB_;
-	char Cout;
-	S.clear();
-	std::tie(InputA_,InputB_)=Calculator::Align(
-		Calculator::Str2Vec(InputA),
-		Calculator::Str2Vec(InputB));
-	std::tie(S,Cout)=A.ADDER(
-		'0',
-		InputA_,
-		InputB_);
-	if(Cout!='0')
-		S.push_back(Cout);
-	std::reverse(S.begin(),S.end());
-	return S;
+void inputmode(int &mode){
+    cout << "----Welcome to big number calculator----" << endl
+         << "Please choose the function" << endl
+         << "1.Addition" << endl
+         << "2.Subtraction" << endl
+         << "3.Multiplication" << endl
+         << "0.Exit" << endl
+         << "--------------------------" <<endl;
+    cin >> mode;
 }
 
-std::vector<char> Calculator::SUB(){
-	Adder A;
-	std::vector<char> S;
-	std::vector<char> InputA_;
-	std::vector<char> InputB_;
-	char Cout;
-	S.clear();
-	InputA_.clear();
-	InputB_.clear();
-	std::tie(InputA_,InputB_)=Calculator::Align(
-		Calculator::Str2Vec(InputA),
-		Calculator::Str2Vec(InputB));
-	std::tie(S,Cout)=A.ADDER(
-		'1',
-		InputA_,
-		Calculator::Complement(InputB_)
-		);
-	if(Cout=='0'){
-		std::vector<char> One(S.size(),'0');
-		S=Calculator::Complement(S);
-		std::tie(S,Cout)=A.ADDER('1',S,One);
-		Cout='-';
-		S.push_back(Cout);
-	}
-	std::reverse(S.begin(),S.end());
-	return S;
+void changeform(string a,string b,int *A,int *B){
+    for (int timeA = 0;timeA<a.length();timeA++)
+        A[timeA] = a[timeA]-'0';
+    for (int timeB = 0;timeB<b.length();timeB++)
+        B[timeB] = b[timeB]-'0';
 }
 
-std::vector<char> Calculator::MUL(){
-	Multiplexer m;
-	std::vector<char> Sum;
-	std::vector<char> v;
-	std::vector<char> Input0=Calculator::Str2Vec(InputA);
-	std::vector<char> Input1=Calculator::Str2Vec(InputB);
-	v.clear();
-	Sum.clear();
-	char Cout;
-	for(size_t i=0;i<Input1.size();i++){
-		std::vector<char> Temp;
-		Temp.clear();
-		for(size_t j=0;j<i;j++)
-			Temp.push_back('0');
-		v=m.Multiplexer_OneDigit(
-			Input0,
-			Input1[i]);
-		std::copy(
-			v.begin(),
-			v.end(),
-			back_inserter(Temp));
-		std::tie(Sum,Temp)=Calculator::Align(
-			Sum,
-			Temp);
-		std::tie(Sum,Cout)=m.ADDER(
-		'0',
-		Sum,
-		Temp);
-		if(Cout!='0')
-			Sum.push_back(Cout);
-	}
-	std::reverse(Sum.begin(),Sum.end());
-	return Sum;
+void changeform(string a,string b,Z *A,Z *B){
+    for (int timeA = 0;timeA<a.length();timeA++)
+        A[timeA] = Z(a[timeA] - '0');
+    for (int timeB = 0;timeB<b.length();timeB++)
+        B[timeB] = Z(b[timeB] - '0');
 }
 
-std::vector<char> Calculator::Complement(std::vector<char> Vector){
-	std::vector<char> Result;
-	Result.clear();
-	for(size_t i=0;i<Vector.size();i++){
-		Result.push_back((9-(Vector[i]-'0'))+'0');
-	}
-	return Result;
+void addition(string a, string b, vector<int> &c){
+    int *shark, *bebe;
+    int space = max(a.length(), b.length());
+    shark = new int[space+1]();
+    bebe = new int[space+1]();
+    int sum = 0;
+    int carry = 0;
+    reverse(a.begin(), a.end());
+    reverse(b.begin(), b.end());
+    changeform(a, b, shark, bebe);
+    for (int time = 0;time<space;time++){
+        sum = shark[time] + bebe[time] + carry;
+        carry = sum / 10;
+        c.push_back(sum % 10);
+    }
+    delete[] shark;
+    delete[] bebe;
 }
 
-std::vector<char> Calculator::Str2Vec(std::string String){
-	std::vector<char> v(String.rbegin(),String.rend());
-	return v;
+void subtraction(string a, string b, vector<int> &c){
+    int *shark, *bebe;
+    int space = max(a.length(), b.length());
+    shark = new int[space]();
+    bebe = new int[space]();
+    int delta = 0;
+    int borrow = 0;
+    reverse(a.begin(), a.end());
+    reverse(b.begin(), b.end());
+    changeform(a, b, shark, bebe);
+    for (int time = 0;time<space;time++){
+        delta = shark[time] - bebe[time] - borrow;
+        if(delta<0){
+            delta += 10;
+            borrow = 1;
+        }else
+            borrow = 0;
+        c.push_back(delta);
+    }
+    if(borrow!=0){
+        c.push_back(borrow);
+    }
+    delete[] shark;
+    delete[] bebe;
+}
+void multiplication(string a, string b, vector<int> &c){
+    Z *shark, *bebe;
+    int *gura;
+    int space = a.length() + b.length() - 1;
+    int n = 0;
+    int num = pow(2, n);
+    while(num<space){
+        num = pow(2, n);
+        n++;
+    }
+    if(num>space){
+        space = pow(2, n);
+    }
+    shark = new Z[space]();
+    bebe = new Z[space]();
+    gura = new int[space]();
+    reverse(a.begin(), a.end());
+    reverse(b.begin(), b.end());
+    changeform(a, b, shark, bebe);
+    FFT(shark, space, 1);
+    FFT(bebe, space, 1);
+    for (int i = 0;i<space;i++)
+        shark[i] *= bebe[i];
+    FFT(shark, space, -1);
+    for (int i = 0;i<space;++i){
+        gura[i] = (int)(shark[i].real() + 0.5);
+    }
+    for (int i = 0; i < space; ++i){
+        gura[i + 1] += gura[i] / 10;
+        gura[i] %= 10;
+        c.push_back(gura[i]);
+    }
+    delete[] shark;
+    delete[] gura;
+    delete[] bebe;
 }
 
-std::tuple<std::vector<char>,std::vector<char>> Calculator::Align(
-		std::vector<char> Vector0,
-		std::vector<char> Vector1){
-	int diff=0;
-	if(Vector0.size()>=Vector1.size()){
-		diff=Vector0.size()-Vector1.size();
-		for(size_t i=0;i<diff;i++){
-			Vector1.push_back('0');
-		}
-	}else{
-		diff=Vector1.size()-Vector0.size();
-		for(size_t i=0;i<diff;i++){
-			Vector0.push_back('0');
-		}
-	}
-	return std::make_tuple(Vector0,Vector1);
-}
-
-std::tuple<char,char> Adder::ADDER_Unit(char A,char B,char Cin){
-	return std::make_tuple((((A-'0')+(B-'0')+(Cin-'0'))/10)+'0',
-		(((A-'0')+(B-'0')+(Cin-'0'))%10)+'0');
-}
-
-std::tuple<std::vector<char>,char> Adder::ADDER(
-		char Cin,
-		std::vector<char> Input0,
-		std::vector<char> Input1){
-	char C=Cin;
-	char Cout;
-	char S;
-	std::vector<char> Output;
-	Output.clear();
-	if(Input0.size()!=Input1.size())
-		std::cout << "error!\n";
-	for(size_t i=0;i<std::max(Input0.size(),Input1.size());i++){
-		std::tie(C,S)=ADDER_Unit(Input0[i],Input1[i],C);
-		Output.push_back(S);
-	}
-	Cout=C;
-	return std::make_tuple(Output,Cout);
-}
-
-std::tuple<char,char> Multiplexer::MUL_Unit(char A,char B,char Cin){
-	return std::make_tuple((((A-'0')*(B-'0')+(Cin-'0'))/10)+'0',
-		(((A-'0')*(B-'0')+(Cin-'0'))%10)+'0');
-}
-
-std::vector<char> Multiplexer::Multiplexer_OneDigit(
-	std::vector<char> Input0,
-	char Input1){
-	std::vector<char> Output;
-	Output.clear();
-	char Cin='0';
-	char S;
-	for(size_t i=0;i<Input0.size();i++){
-		std::tie(Cin,S)=MUL_Unit(Input0[i],Input1,Cin);
-		Output.push_back(S);
-	}
-	if(Cin!='0')
-		Output.push_back(Cin);
-	return Output;
+void FFT(Z* a, int n, int t) {
+  bit_reverse_swap(a, n);
+  for (int i = 2; i <= n; i <<= 1) {
+    Z wi(cos(2.0 * t * PI / i), sin(2.0 * t *PI / i));
+    for (int j = 0; j < n; j += i) {
+      Z w(1);
+      for (int k = j, h = i >> 1; k < j + h; ++k) {
+        Z t = w * a[k + h], u = a[k];
+        a[k] = u + t;
+        a[k + h] = u - t;
+        w *= wi;
+      }
+    }
+  }
+  if (t == -1) {
+    for (int i = 0; i < n; ++i) {
+      a[i] /= n;
+    }
+  }
 }
