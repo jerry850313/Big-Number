@@ -8,17 +8,18 @@
 
 using namespace std;
 typedef complex<double> Z;
-const double PI(acos(-1.0));
+const double PI = 3.141592653;
 
 void inputmode(int &mode);
+void inputnum(string &a,string &b);
 void chosemode(int mode,string a, string b, vector<int> &c);
 void addition(string a, string b, vector<int> &c);
 void subtraction(string a, string b, vector<int> &c);
 void multiplication(string a, string b, vector<int> &c);
 void changeform(string a,string b,int *A,int *B);
-void changeform(string a, string b, vector<int> *A, vector<int> *B);
 void FFT(Z *a, int n, int t);
-void changeform(string a, string b, Z A[], Z B[]);
+void changeform(string a, string b, Z *A[], Z *B[]);
+void bit_reverse_swap(Z *a, int n);
 
 int main(){
     string inputA, inputB;
@@ -27,35 +28,7 @@ int main(){
     while(countmode!=0){
         inputmode(countmode);
         if(countmode!=0){
-            switch(countmode){
-                case 1:
-                    cout << "----Now for Addition----"<<endl;
-                        cout << "a= ";
-                        cin >> inputA;
-                        cout << "b=";
-                        cin >> inputB;
-                        addition(inputA, inputB, outputC);
-                        break;
-                case 2:
-                    cout << "----Now for Subtraction----" << endl;
-                        cout << "a= ";
-                        cin >> inputA;
-                        cout << "b=";
-                        cin >> inputB;
-                        subtraction(inputA, inputB, outputC);
-                        break;
-                case 3:
-                    cout << "----Now for Subtraction----" << endl;
-                        cout << "a= ";
-                        cin >> inputA;
-                        cout << "b=";
-                        cin >> inputB;
-                        multiplication(inputA, inputB, outputC);
-                        break;
-                default:
-                    cout << "Error! Please try again" << endl;
-                    break;
-            }
+            chosemode(countmode,inputA, inputB, outputC);
             cout << "Result:";
             while (!outputC.empty())
             {
@@ -69,6 +42,29 @@ int main(){
     return 0;
 }
 
+void chosemode(int mode,string a, string b, vector<int> &c){
+    switch(mode){
+                case 1:
+                    cout << "----Now for Addition----"<<endl;
+                    inputnum(a, b);
+                    addition(a,b,c);
+                    break;
+                case 2:
+                    cout << "----Now for Subtraction----" << endl;
+                    inputnum(a,b);
+                    subtraction(a,b,c);
+                    break;
+                case 3:
+                    cout << "----Now for Subtraction----" << endl;
+                    inputnum(a,b);
+                    multiplication(a,b,c);
+                    break;
+                default:
+                    cout << "Error! Please try again" << endl;
+                    break;
+            }
+}
+
 void inputmode(int &mode){
     cout << "----Welcome to big number calculator----" << endl
          << "Please choose the function" << endl
@@ -78,6 +74,13 @@ void inputmode(int &mode){
          << "0.Exit" << endl
          << "--------------------------" <<endl;
     cin >> mode;
+}
+
+void inputnum(string &a,string &b){
+    cout << "a= ";
+    cin >> a;
+    cout << "b=";
+    cin >> b;
 }
 
 void changeform(string a,string b,int *A,int *B){
@@ -141,16 +144,12 @@ void subtraction(string a, string b, vector<int> &c){
 void multiplication(string a, string b, vector<int> &c){
     Z *shark, *bebe;
     int *gura;
-    int space = a.length() + b.length() - 1;
-    int n = 0;
-    int num = pow(2, n);
+    int space = a.length() + b.length();
+    int num = 1;
     while(num<space){
-        num = pow(2, n);
-        n++;
+        num *= 2;
     }
-    if(num>space){
-        space = pow(2, n);
-    }
+    space = num;
     shark = new Z[space]();
     bebe = new Z[space]();
     gura = new int[space]();
@@ -159,17 +158,22 @@ void multiplication(string a, string b, vector<int> &c){
     changeform(a, b, shark, bebe);
     FFT(shark, space, 1);
     FFT(bebe, space, 1);
-    for (int i = 0;i<space;i++)
+    for (int i = 0;i<space;++i)
         shark[i] *= bebe[i];
     FFT(shark, space, -1);
     for (int i = 0;i<space;++i){
         gura[i] = (int)(shark[i].real() + 0.5);
     }
-    for (int i = 0; i < space; ++i){
-        gura[i + 1] += gura[i] / 10;
+    int carry=0;
+    int i = 0;
+    for (; i < a.length() + b.length()-1; i++){
+        gura[i] += carry;
+        carry = gura[i] / 10;
         gura[i] %= 10;
         c.push_back(gura[i]);
     }
+    if( gura[i]!=0)
+        c.push_back(gura[i]);
     delete[] shark;
     delete[] gura;
     delete[] bebe;
@@ -178,7 +182,7 @@ void multiplication(string a, string b, vector<int> &c){
 void FFT(Z* a, int n, int t) {
   bit_reverse_swap(a, n);
   for (int i = 2; i <= n; i <<= 1) {
-    Z wi(cos(2.0 * t * PI / i), sin(2.0 * t *PI / i));
+    Z wi(cos(2.0 * t * PI / i), sin(2.0 * t * PI / i));
     for (int j = 0; j < n; j += i) {
       Z w(1);
       for (int k = j, h = i >> 1; k < j + h; ++k) {
@@ -193,5 +197,14 @@ void FFT(Z* a, int n, int t) {
     for (int i = 0; i < n; ++i) {
       a[i] /= n;
     }
+  }
+}
+
+void bit_reverse_swap(Z* a, int n) {
+  for (int i = 1, j = n >> 1, k; i < n - 1; ++i) {
+    if (i < j) swap(a[i], a[j]);
+    for (k = n >> 1; j >= k; j -= k, k >>= 1)
+      ;
+    j += k;
   }
 }
