@@ -23,21 +23,34 @@ void bit_reverse_swap(Z *a, int n);
 
 int main(){
     string inputA, inputB;
-    vector<int>  outputC;
+    vector<int>  outputC,temp;
     int countmode=6;
+    int mode = 0;
     while(countmode!=0){
         inputmode(countmode);
         if(countmode!=0){
             chosemode(countmode,inputA, inputB, outputC);
             cout << "Result:";
-            while (!outputC.empty())
-            {
-                cout << outputC.back();
-                outputC.pop_back();
+            temp.assign(outputC.begin(), outputC.end());
+            while (!temp.empty()){
+            	if(temp.back()==0){
+            		mode=1;
+				}else{
+					mode=0;
+				}                	
+				temp.pop_back();
             }
+            if(mode==0){
+            	while (!outputC.empty()){
+                	cout << outputC.back();
+                	outputC.pop_back();
+            		}
+				}else{
+					cout << 0;
+				}
+			}
         cout << endl;
         }
-    }
     cout << "Good bye!";
     return 0;
 }
