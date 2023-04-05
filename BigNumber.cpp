@@ -173,8 +173,8 @@ void multiplication(string a, string b, vector<int> &c){
         gura[i] %= 10;
         c.push_back(gura[i]);
     }
-    if( gura[i]!=0)
-        c.push_back(gura[i]);
+    if( carry!=0)
+        c.push_back(carry);
     delete[] shark;
     delete[] gura;
     delete[] bebe;
