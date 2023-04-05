@@ -112,6 +112,7 @@ void addition(string a, string b, vector<int> &c){
         carry = sum / 10;
         c.push_back(sum % 10);
     }
+    c.push_back(carry);
     delete[] shark;
     delete[] bebe;
 }
